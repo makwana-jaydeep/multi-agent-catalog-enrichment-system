@@ -113,19 +113,18 @@ if submit_btn and raw_text:
 
             # Parse attributes into key-value format
             for attr in listing.get("attributes", []):
-
-                if ":" in attr:
-                    key, val = attr.split(":", 1)
+                if isinstance(attr, dict):
+                    # Use the specific keys 'name' and 'value' defined in your schema
+                    name = attr.get("name", "Attribute")
+                    value = attr.get("value", "Unknown")
+                    table_rows.append([name, value])
+                elif ":" in str(attr):
+                    # format "Color: Blue"
+                    key, val = str(attr).split(":", 1)
                     table_rows.append([key.strip(), val.strip()])
-
-                else:
-                    table_rows.append(["Attribute", attr])
 
 
             # Create and display table
-            df = pd.DataFrame(
-                table_rows,
-                columns=["Property", "Value"]
-            )
+            df = pd.DataFrame(table_rows, columns=["Feature", "Details"])
 
             st.table(df)

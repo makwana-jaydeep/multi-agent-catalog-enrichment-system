@@ -1,4 +1,3 @@
-import os
 import base64
 from dotenv import load_dotenv
 
@@ -17,13 +16,6 @@ llm = ChatOpenAI(model="gpt-4o-mini", temperature=0)
 
 # Configure LLM to return structured output
 structured_llm = llm.with_structured_output(ProductListing)
-
-
-# Convert image to base64 format
-def encode_image(image_path):
-
-    with open(image_path, "rb") as image_file:
-        return base64.b64encode(image_file.read()).decode("utf-8")
 
 
 # Agent node: Extract structured data from text and image
@@ -90,6 +82,9 @@ def validation_node(state):
     # Get listing from state
     listing = state.get("listing", {})
 
+    # Trigger review if the model is less than 70% sure
+    if listing.get("confidence_score", 1.0) < 0.7:
+        listing["requires_manual_review"] = True
 
     # Basic validation: check title length
     if len(listing.get("title", "")) < 10:

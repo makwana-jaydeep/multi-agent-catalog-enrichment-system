@@ -1,10 +1,12 @@
 from typing import List
 from pydantic import BaseModel, Field
-from dotenv import load_dotenv
 
 
-# Load environment variables
-load_dotenv()
+# Pydantic model for individual product attributes
+class Attribute(BaseModel):
+    name: str = Field(description="The specific name of the property, like 'Fabric', 'Color', or 'Caffeine Content'")
+    value: str = Field(description="The value of that property")
+
 
 
 # Pydantic model for structured product data
@@ -16,8 +18,8 @@ class ProductListing(BaseModel):
     )
 
     # List of extracted attributes (color, size, material, etc.)
-    attributes: List[str] = Field(
-        description="Extracted product attributes like color, size, material"
+    attributes: List[Attribute] = Field(
+        description="List of specific features found in the product"
     )
 
     # Product category
